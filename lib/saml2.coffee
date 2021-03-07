@@ -473,9 +473,15 @@ parse_authn_response = (saml_response, sp_private_keys, idp_certificates, allow_
           for attribute in conditions.attributes
             condition = attribute.name.toLowerCase()
             if condition == 'notbefore' and Date.parse(attribute.value) > Date.now() + (notbefore_skew * 1000)
-              return cb_wf new SAMLError('SAML Response is not yet valid', {NotBefore: attribute.value})
+              console.error({
+                NotBefore: attribute.value
+              });
+#              return cb_wf new SAMLError('SAML Response is not yet valid', {NotBefore: attribute.value})
             if condition == 'notonorafter' and Date.parse(attribute.value) <= Date.now()
-              return cb_wf new SAMLError('SAML Response is no longer valid', {NotOnOrAfter: attribute.value})
+              console.error({
+                NotOnAfter: attribute.value
+              });
+#              return cb_wf new SAMLError('SAML Response is no longer valid', {NotOnOrAfter: attribute.value})
 
         audience_restriction = conditions.getElementsByTagNameNS(XMLNS.SAML, 'AudienceRestriction')[0]
         audiences = audience_restriction?.getElementsByTagNameNS(XMLNS.SAML, 'Audience')
